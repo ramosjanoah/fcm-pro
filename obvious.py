@@ -15,11 +15,11 @@ def euclidean_distance_square(a,b):
     return math.sqrt(distance_square)
 
 def build_obvious(  centroids = [[0,0],[10,10]],
-                     amount_instance_each_cluster=[5,10],
+                     amount_instance_each_cluster=[5,5],
                      range_to_centroid = 2,
                      range_type = 'euclidean',
                      amount_of_outlier = 0,
-                     outlier_border_ratio = 5):
+                     outlier_border_ratio = 4):
     """
     centroids : centroid-centroidnya. Panjangnya harus sama dengan amount_instance_each_cluster
     amount_instance_each_cluster : jumlah data yang ingin dibuat tiap cluster
@@ -43,6 +43,7 @@ def build_obvious(  centroids = [[0,0],[10,10]],
         if len(centroid) != ammount_of_attribute:
             raise Exception("Number attribute of all centroid not same")
             return
+            
     # validating outlier properties
     if amount_of_outlier > 0 and outlier_border_ratio < 1:
         raise Exception("If amount_of_outlier, outlier_border_ratio can't < 1")
