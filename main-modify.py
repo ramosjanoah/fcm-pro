@@ -36,14 +36,20 @@ random.seed(0)
 
 NUM_CLUSTERS = 2
 NUM_RANDOM_INSTANCES = len(data_list)
-LABEL = ['<=50K', '>50K']
-M = 13
+LABEL = ['>50K', '<=50K']
+M = 5
 E = 0.1 ** 5
 
-c = [data_list[0], data_list[1000]]
+# c = [data_list[0], data_list[1000]]
+c = []
 x = data_list
 u = []
 old_u = []
+
+# Generate random clusters
+for i in range(NUM_CLUSTERS):
+	instance_index_as_cluster = random.randint(0, NUM_RANDOM_INSTANCES)
+	c.append(x[instance_index_as_cluster])
 
 # Initialize u
 for i in range(len(x)):
