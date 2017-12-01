@@ -2,6 +2,7 @@ import random
 import operator
 from enum import Enum
 import copy
+from obvious import build_obvious
 
 class vector(Enum):
 	# def dot(v1, v2):
@@ -36,12 +37,9 @@ x = []
 u = []
 old_u = []
 
-# Generate random datasets
-for i in range(NUM_RANDOM_INSTANCES):
-	inst = []
-	for j in range(NUM_DIMENSIONS):
-		inst.append(random.uniform(-10, 10))
-	x.append(inst)
+# Generate dataset from obvious
+x = build_obvious(amount_instance_each_cluster=[NUM_RANDOM_INSTANCES,NUM_RANDOM_INSTANCES],
+				 	amount_of_outlier = 2)
 
 # Generate random clusters
 for i in range(NUM_CLUSTERS):
