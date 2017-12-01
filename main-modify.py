@@ -37,8 +37,8 @@ random.seed(0)
 NUM_CLUSTERS = 2
 NUM_RANDOM_INSTANCES = len(data_list)
 LABEL = ['<=50K', '>50K']
-M = 2
-E = 0.1 ** 10
+M = 13
+E = 0.1 ** 5
 
 c = [data_list[0], data_list[1000]]
 x = data_list
