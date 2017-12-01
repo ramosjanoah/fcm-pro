@@ -2,7 +2,14 @@ import random
 import operator
 from enum import Enum
 import copy
-from obvious import build_obvious
+
+# read dataset
+import importlib
+import read
+
+# uncomment this if you want to reload read.py
+#read = importlib.reload(read)
+data_list = read.data_raw_numeric
 
 class vector(Enum):
 	# def dot(v1, v2):
@@ -28,18 +35,21 @@ random.seed(0)
 
 NUM_DIMENSIONS = 2
 NUM_CLUSTERS = 2
-NUM_RANDOM_INSTANCES = 5
+NUM_RANDOM_INSTANCES = 10
 M = 2
 E = 0.01
 
 c = []
-x = []
+x = data_list
 u = []
 old_u = []
 
 # Generate random datasets
-x = build_obvious(amount_instance_each_cluster=[NUM_RANDOM_INSTANCES,NUM_RANDOM_INSTANCES],
-				 	amount_of_outlier = 2)
+#for i in range(NUM_RANDOM_INSTANCES):
+#	inst = []
+#	for j in range(NUM_DIMENSIONS):
+#		inst.append(random.uniform(-10, 10))
+#	x.append(inst)
 
 # Generate random clusters
 for i in range(NUM_CLUSTERS):
@@ -53,7 +63,6 @@ for i in range(len(x)):
 		ui.append(0)
 	u.append(ui)
 	old_u.append(ui)
-
 
 def get_similarity(xi, cj):
 	sum_of_diff = 0
@@ -133,7 +142,7 @@ update_u()
 
 print("\n================== POINTS ==================")
 for xi in x:
-	print(xi)	
+	print(xi)
 
 print("\n================= CENTROID =================")
 for cj in c:
