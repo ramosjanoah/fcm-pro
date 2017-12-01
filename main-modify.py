@@ -33,11 +33,10 @@ class vector(Enum):
 
 random.seed(0)
 
-NUM_DIMENSIONS = 2
 NUM_CLUSTERS = 2
-NUM_RANDOM_INSTANCES = 10
+NUM_RANDOM_INSTANCES = len(data_list)
 M = 2
-E = 0.01
+E = 0.001
 
 c = []
 x = data_list
@@ -63,6 +62,18 @@ for i in range(len(x)):
 		ui.append(0)
 	u.append(ui)
 	old_u.append(ui)
+
+def predict(u):
+	results = []
+	for ui in u:
+		maximum = ui[0]
+		j_max = 0
+		for j, uij in enumerate(ui[1:]):
+			if maximum < uij:
+				maximum = uij
+				j_max = j
+		results.append((j_max, maximum))
+	return results
 
 def get_similarity(xi, cj):
 	sum_of_diff = 0
@@ -141,7 +152,7 @@ def get_max_u():
 update_u()
 
 print("\n================== POINTS ==================")
-for xi in x:
+for xi in x[:10]:
 	print(xi)
 
 print("\n================= CENTROID =================")
@@ -149,7 +160,7 @@ for cj in c:
 	print(cj)
 
 print("\n===================== U ====================")
-for ui in u:
+for ui in u[:10]:
 	print(ui)
 
 iteration = 0
@@ -162,8 +173,14 @@ while(not is_converge()):
 
 print("CONVERGE AT #", iteration)
 print("\n=================== OLD U ==================")
-for old_ui in old_u:
+for old_ui in old_u[:10]:
 	print(old_ui)
 print("\n===================== U ====================")
-for ui in u:
+for ui in u[:10]:
 	print(ui)
+
+preds = predict(u)
+for pred in preds[:10]:
+	print(pred)
+
+zerois = ""
