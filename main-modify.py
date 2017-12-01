@@ -9,6 +9,7 @@ import read
 
 # uncomment this if you want to reload read.py
 #read = importlib.reload(read)
+# data_list = read.data_raw_numeric
 data_list = read.data_raw_numeric
 
 class vector(Enum):
@@ -35,25 +36,14 @@ random.seed(0)
 
 NUM_CLUSTERS = 2
 NUM_RANDOM_INSTANCES = len(data_list)
+LABEL = ['<=50K', '>50K']
 M = 2
-E = 0.001
+E = 0.1 ** 10
 
-c = []
+c = [data_list[0], data_list[1000]]
 x = data_list
 u = []
 old_u = []
-
-# Generate random datasets
-#for i in range(NUM_RANDOM_INSTANCES):
-#	inst = []
-#	for j in range(NUM_DIMENSIONS):
-#		inst.append(random.uniform(-10, 10))
-#	x.append(inst)
-
-# Generate random clusters
-for i in range(NUM_CLUSTERS):
-	instance_index_as_cluster = random.randint(0, NUM_RANDOM_INSTANCES)
-	c.append(x[instance_index_as_cluster])
 
 # Initialize u
 for i in range(len(x)):
@@ -66,14 +56,68 @@ for i in range(len(x)):
 def predict(u):
 	results = []
 	for ui in u:
-		maximum = ui[0]
-		j_max = 0
-		for j, uij in enumerate(ui[1:]):
+		maximum = -1
+		j_max = -1
+		for j, uij in enumerate(ui):
 			if maximum < uij:
 				maximum = uij
 				j_max = j
 		results.append((j_max, maximum))
 	return results
+
+def get_accuracy(tp, tn, fp, fn):
+	try:
+		return (tp+tn)/(tp+tn+fp+fn)
+	except:
+		return 0
+
+def get_precision(tp, tn, fp, fn):
+	try:
+		return (tp)/(tp+fp)
+	except:
+		return 0
+
+def get_recall(tp, tn, fp, fn):
+	try:
+		return (tp)/(tp+fn)
+	except:
+		return 0
+
+def get_f1(precision, recall):
+	try:
+		return 2 * (precision*recall) / (precision+recall)
+	except:
+		return 0
+
+def evaluate(predictions):
+	tp = 0
+	fp = 0
+	tn = 0
+	fn = 0
+	for i, pred in enumerate(predictions):
+		if LABEL[pred[0]] == ">50K":
+			if (LABEL[pred[0]] == read.data_raw.loc[i]['income']):
+				tp+=1
+			else:
+				fp+=1
+		else: # LABEL[pred[0]] == "<=50K"
+			if (LABEL[pred[0]] == read.data_raw.loc[i]['income']):
+				tn+=1
+			else:
+				fn+=1
+	print("tp:", tp)
+	print("tn:", tn)
+	print("fp:", fp)
+	print("fn:", fn)
+	accuracy = get_accuracy(tp, tn, fp, fn)
+	precision = get_precision(tp, tn, fp, fn)
+	recall = get_recall(tp, tn, fp, fn)
+	f1 = get_f1(precision, recall)
+	print("Accuracy	:", accuracy*100, "%")
+	print("Precision	:", precision*100, "%")
+	print("Recall		:", recall*100, "%")
+	print("F1		:", f1*100, "%")
+	return (tp, tn, fp, fn)
 
 def get_similarity(xi, cj):
 	sum_of_diff = 0
@@ -180,7 +224,4 @@ for ui in u[:10]:
 	print(ui)
 
 preds = predict(u)
-for pred in preds[:10]:
-	print(pred)
-
-zerois = ""
+evaluate(preds)

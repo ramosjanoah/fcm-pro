@@ -2,6 +2,8 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.preprocessing import OneHotEncoder
 
+COLUMNS_TO_CONSIDER = ['capital-gain', 'capital-loss', 'hours-per-week']
+
 # load dataset
 path = "CensusIncome/CencusIncome.data.txt"
 
@@ -19,7 +21,7 @@ for index, row in data_raw.iterrows():
 
 # split categorical and numeric
 data_raw_categorical = data_raw.select_dtypes(include=[object])
-data_raw_numeric = data_raw.select_dtypes(include=[int,float])
+data_raw_numeric = data_raw.ix[:, COLUMNS_TO_CONSIDER]
 
 # [NORMALIZATION NUMERIC]
 # get header to normalize
