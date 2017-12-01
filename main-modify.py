@@ -54,6 +54,10 @@ for i in range(len(x)):
 	old_u.append(ui)
 
 def predict(u):
+	"""
+		Param: u => the u (degree of memberness) after training
+		returns: the prediction of all data (numeric label {0, 1, 2 .., n})
+	"""
 	results = []
 	for ui in u:
 		maximum = -1
@@ -120,12 +124,20 @@ def evaluate(predictions):
 	return (tp, tn, fp, fn)
 
 def get_similarity(xi, cj):
+	"""
+		Param: xi => vector input with index i
+		Param: cj => the jth centroid
+		returns: distance between xi and cj (similarity)
+	"""
 	sum_of_diff = 0
 	for i in range(len(xi)):
 		sum_of_diff += (xi[i] - cj[i]) ** 2
 	return sum_of_diff ** (1/2)
 
 def get_new_uij(i, j):
+	"""
+		Calculate the new uij based on formula in the slide
+	"""
 	result = 0
 	for k, ck in enumerate(c):
 		try:
@@ -143,6 +155,9 @@ def get_new_uij(i, j):
 		return 0
 
 def initialize_u():
+	"""
+		Make a new u matrix
+	"""
 	u = list()
 	for i in range(len(x)):
 		ui = []
@@ -151,6 +166,9 @@ def initialize_u():
 		u.append(ui)
 
 def update_u(**kwargs):
+	"""
+		Updates all u, based on slide
+	"""
 	global old_u, u
 	old_u = copy.deepcopy(u)
 	initialize_u()
@@ -159,6 +177,9 @@ def update_u(**kwargs):
 			u[i][j] = get_new_uij(i, j)
 
 def get_new_cj(j):
+	"""
+		Calculate the new centroid of index j
+	"""
 	result1 = [0] * len(x[0])
 	result2 = 0
 	for i, xi in enumerate(x):
@@ -171,10 +192,18 @@ def get_new_cj(j):
 	return vector.div(result2, result1)
 
 def update_c(**kwargs):
+	"""
+		Update all centroids
+	"""
 	for j, cj in enumerate(c):
 		c[j] = get_new_cj(j)
 
 def is_converge():
+	"""
+		Checks if clusters have converged.
+		Formula based off slide.
+		E => epsilon => the threshold
+	"""
 	global u, old_u
 	maximum = 0;
 	for i, ui in enumerate(u):
@@ -185,6 +214,10 @@ def is_converge():
 	return True
 
 def get_max_u():
+	"""
+		Gets the maximum uij in u
+		ga penting ini mah buat diprint doang
+	"""
 	maximum = 0;
 	for i, ui in enumerate(u):
 		for j, uij in enumerate(ui):
@@ -216,9 +249,6 @@ while(not is_converge()):
 	print(get_max_u())
 
 print("CONVERGE AT #", iteration)
-print("\n=================== OLD U ==================")
-for old_ui in old_u[:10]:
-	print(old_ui)
 print("\n===================== U ====================")
 for ui in u[:10]:
 	print(ui)
