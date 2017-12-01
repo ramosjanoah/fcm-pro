@@ -37,6 +37,7 @@ random.seed(0)
 NUM_CLUSTERS = 2
 NUM_RANDOM_INSTANCES = len(data_list)
 LABEL = ['>50K', '<=50K']
+POSITIVE_LABEL = '>50K'
 M = 5
 E = 0.1 ** 5
 
@@ -105,7 +106,7 @@ def evaluate(predictions):
 	tn = 0
 	fn = 0
 	for i, pred in enumerate(predictions):
-		if LABEL[pred[0]] == ">50K":
+		if LABEL[pred[0]] == POSITIVE_LABEL:
 			if (LABEL[pred[0]] == read.data_raw.loc[i]['income']):
 				tp+=1
 			else:
