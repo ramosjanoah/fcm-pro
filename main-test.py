@@ -5,12 +5,19 @@ import copy
 
 # read dataset
 import importlib
-import read
+import readtest
 
 # uncomment this if you want to reload read.py
 #read = importlib.reload(read)
 # data_list = read.data_raw_numeric
-data_list = read.data_raw_numeric
+data_list = readtest.data_raw_numeric
+# read data train
+num_train = 0.8 * len(data_list)
+data_train = data_list[:int(num_train)]
+
+# read data test
+num_test = 0.2 * len(data_list)
+data_test = data_list[int(num_train):]
 
 class vector(Enum):
 	# def dot(v1, v2):
@@ -35,13 +42,13 @@ class vector(Enum):
 random.seed(0)
 
 NUM_CLUSTERS = 2
-NUM_RANDOM_INSTANCES = len(data_list)
+NUM_RANDOM_INSTANCES = len(data_train)
 LABEL = ['<=50K', '>50K']
 M = 2
 E = 0.1 ** 10
 
-c = [data_list[0], data_list[1002]]
-x = data_list
+c = [data_train[0], data_train[1000]]
+x = data_train
 u = []
 old_u = []
 
@@ -94,14 +101,15 @@ def evaluate(predictions):
 	fp = 0
 	tn = 0
 	fn = 0
+	idx_test = len(data_list) - len(data_test)
 	for i, pred in enumerate(predictions):
 		if LABEL[pred[0]] == ">50K":
-			if (LABEL[pred[0]] == read.data_test.loc[i]['income']):
+			if (LABEL[pred[0]] == readtest.data_test.loc[i+idx_test]['income']):
 				tp+=1
 			else:
 				fp+=1
 		else: # LABEL[pred[0]] == "<=50K"
-			if (LABEL[pred[0]] == read.data_test.loc[i]['income']):
+			if (LABEL[pred[0]] == readtest.data_test.loc[i+idx_test]['income']):
 				tn+=1
 			else:
 				fn+=1
@@ -223,5 +231,60 @@ print("\n===================== U ====================")
 for ui in u[:10]:
 	print(ui)
 
-preds = predict(u)
+# TESTING
+# initialization testing
+xtest = data_test
+utest = []
+old_utest = []
+
+# function for testing
+for i in range(len(xtest)):
+	ui = []
+	for j in range(NUM_CLUSTERS):
+		ui.append(0)
+	utest.append(ui)
+	old_utest.append(ui)
+
+def get_new_uij_test(i, j):
+	result = 0
+	for k, ck in enumerate(c):
+		try:
+			result += (
+				get_similarity(xtest[i], c[j]) 
+				/ 
+				get_similarity(xtest[i], ck)
+			)
+		except:
+			pass
+	result **= (2/(M-1))
+	try:
+		return 1 / result
+	except:
+		return 0
+
+def initialize_u_test():
+	utest = list()
+	for i in range(len(xtest)):
+		ui = []
+		for j in range(NUM_CLUSTERS):
+			ui.append(float(0))
+		utest.append(ui)
+
+def update_utest(**kwargs):
+	global old_utest, utest
+	old_utest = copy.deepcopy(utest)
+	initialize_u_test()
+	for j, cj in enumerate(c):
+		for i, xi in enumerate(xtest):
+			utest[i][j] = get_new_uij_test(i, j)
+
+update_utest()
+# print(len(utest))
+# print("\n===================== U ====================")
+# for ui in utest[:10]:
+# 	print(ui)
+
+preds = predict(utest)
+for i in preds[:10]:
+	print(i)
 evaluate(preds)
