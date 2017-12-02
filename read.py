@@ -1,14 +1,19 @@
 import pandas as pd
 from sklearn import preprocessing
 from sklearn.preprocessing import OneHotEncoder
+import dill
 
 COLUMNS_TO_CONSIDER = ['capital-gain', 'capital-loss', 'hours-per-week']
 
-# load dataset
-path = "CensusIncome/CencusIncome.data.txt"
+# # load dataset
+# path = "CensusIncome/CencusIncome.data.txt"
 
-# read dataset
-data_raw = pd.read_csv(path)
+# # read dataset
+# data_raw = pd.read_csv(path)
+
+data_raw = None
+with open('data_raw.pkl', 'rb') as fi:
+	data_raw = dill.load(fi)
 
 # read headers
 headers = list(data_raw.columns.values)

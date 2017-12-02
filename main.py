@@ -29,8 +29,8 @@ random.seed(0)
 NUM_DIMENSIONS = 2
 NUM_CLUSTERS = 2
 NUM_RANDOM_INSTANCES = 10
-M = 2
-E = 0.01
+M = 1.5
+E = 0.1 ** 2
 
 c = []
 x = []

@@ -47,10 +47,16 @@ LABEL = ['<=50K', '>50K']
 M = 2
 E = 0.1 ** 10
 
-c = [data_train[0], data_train[1000]]
+# c = [data_train[0], data_train[1000]]
+c = []
 x = data_train
 u = []
 old_u = []
+
+# Generate random clusters
+for i in range(NUM_CLUSTERS):
+	instance_index_as_cluster = random.randint(0, NUM_RANDOM_INSTANCES)
+	c.append(x[instance_index_as_cluster])
 
 # Initialize u
 for i in range(len(x)):
