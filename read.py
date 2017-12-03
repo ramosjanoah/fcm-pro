@@ -26,6 +26,7 @@ for index, row in data_raw.iterrows():
 
 # split categorical and numeric
 data_raw_categorical = data_raw.select_dtypes(include=[object])
+# data_raw_numeric = data_raw.select_dtypes(exclude=[object])
 data_raw_numeric = data_raw.ix[:, COLUMNS_TO_CONSIDER]
 
 # [NORMALIZATION NUMERIC]
@@ -74,3 +75,30 @@ for index, value in enumerate(data_raw_numeric):
     data_list.append(data_raw_numeric[index] + list(nominal_value[index]))
     
     
+# data test
+# # load dataset
+path = "CensusIncome/CencusIncome.test.txt"
+
+# # read dataset
+data_raw_test = pd.read_csv(path)
+
+# read headers
+headers = list(data_raw_test.columns.values)
+
+# cleaning data, remove blank space infront of string
+for index, row in data_raw_test.iterrows():
+    for header in headers:
+        if str(type(row[header])) == "<class 'str'>":
+            data_raw_test.at[index,header] = row[header].replace(" ","")
+
+data_raw_test_numeric = data_raw_test.ix[:, COLUMNS_TO_CONSIDER]
+# print(data_raw_test_numeric)
+# data_raw_test_numeric = data_raw_test.select_dtypes(exclude=[object])
+
+header_numeric = list(data_raw_test_numeric.columns.values)
+
+# max value of normalization
+max_value_norm_numeric = 1
+
+data_raw_test_numeric[header_numeric] = data_raw_test_numeric[header_numeric ].apply(lambda x: (x - x.min()) * max_value_norm_numeric/ (x.max() - x.min()))
+data_raw_test_numeric = data_raw_test_numeric.values.tolist()
